@@ -39,7 +39,7 @@
 ; 1 = BI_RLE8 8bit RLE encoding  
 ; 2 = BI_RLE4 4bit RLE encoding
 ; 0x22 	ImageSize 	4 bytes 	(compressed) Size of Image 
-    ImageSize       dd 0
+    ImageSize       dd 1900
 ; It is valid to set this = 0 if Compression = 0
 ; 0x26 	XpixelsPerM 	4 bytes 	horizontal resolution: Pixels/meter
     XpixelsPerM     dd 0
@@ -51,10 +51,10 @@
     ColorsImportant dd 0
 ; 0 = all
 ; 0x36 	ColorTable 	4 * NumColors bytes 	present only if Info.BitsPerPixel <= 8
-    ColorTable      dd 0
 ; colors should be ordered by importance
 
     White           db 0xFF
+    
 .UDATA
 
     buffer  resb 1900 ; 76 * 25 ; 76 bytes per row, 25 rows
@@ -167,12 +167,6 @@ create_header:
     mov EAX, 4
     mov EBX, [File_descriptor]
     mov ECX, ColorsImportant
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, ColorTable
     mov EDX, 4
     int 0x80
 
