@@ -185,7 +185,7 @@ int main() {
 		int opcion = 0; // Indica cual opcion del menu esta seleccionada al inicio
 		float timer_anim = 1.0f; // Acumula tiempo para potenciales animaciones de interfaz
 		char input[MAX_INPUT_LENGTH] = {0}; // Buffer para almacenar el texto de entrada 
-		int ignorar_proximo_evento = 0; // Bandera para ignorar el primer evento después de cambiar de estado
+		int ignorar_proximo_evento = 0; // Bandera para ignorar el primer evento despuï¿½s de cambiar de estado
 
 		al_start_timer(timer); // Inicia el temporizador para que comience a generar eventos de reloj
 		int running = 1; // Bandera que indica si el bucle principal debe seguir ejecutandose
@@ -194,7 +194,7 @@ int main() {
 				ALLEGRO_EVENT ev; // Estructura para recibir eventos
 				al_wait_for_event(queue, &ev); // Espera bloqueante hasta recibir un evento disponible
 
-				// ===== MENÚ PRINCIPAL =====
+				// ===== MENï¿½ PRINCIPAL =====
 				if (app == APP_MENU && ev.type == ALLEGRO_EVENT_KEY_DOWN) {
 						if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) { // Si se presiona Escape en el menu
 								running = 0; // Se sale por completo de la aplicacion
@@ -212,9 +212,9 @@ int main() {
 
 						if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER) { // Confirmacion de la opcion actual
 								if (opcion == 0) { // Si el usuario eligio generar
-										app = APP_GENERAR; // Cambia al estado de pantalla de generación
+										app = APP_GENERAR; // Cambia al estado de pantalla de generaciï¿½n
 										input[0] = '\0'; // Resetea el buffer de entrada de texto
-										opcion = 0; // Resetea opción a 0 (input)
+										opcion = 0; // Resetea opciï¿½n a 0 (input)
 										ignorar_proximo_evento = 1; // Ignora el siguiente evento para evitar conflictos
 								}
 								else if (opcion == 1) { // Si el usuario quiere escanear
@@ -229,9 +229,9 @@ int main() {
 
 				// ===== PANTALLA GENERAR QR =====
 				if (app == APP_GENERAR && ev.type == ALLEGRO_EVENT_KEY_DOWN) {
-						if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) { // Gestiona la salida de la pantalla de generación
+						if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) { // Gestiona la salida de la pantalla de generaciï¿½n
 								app = APP_MENU; // Regresa al estado de menu cuando se presiona Escape
-								opcion = 0; // Resetea opción al volver al menú
+								opcion = 0; // Resetea opciï¿½n al volver al menï¿½
 						}
 
 						else if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE) { // Maneja la tecla de retroceso para borrar caracteres
@@ -259,12 +259,12 @@ int main() {
 								}
 						}		
 				}
-				// Agregar caracteres normales (letras, números, símbolos)
+				// Agregar caracteres normales (letras, nï¿½meros, sï¿½mbolos)
 				if (app == APP_GENERAR && ev.type == ALLEGRO_EVENT_KEY_CHAR && opcion == 0) {
 						if (ev.keyboard.unichar >= 32 && ev.keyboard.unichar <= 126) {
 								int len = strlen(input);
 								if (len < MAX_INPUT_LENGTH - 1) {
-										input[len] = (char)ev.keyboard.unichar; // Agrega el carácter
+										input[len] = (char)ev.keyboard.unichar; // Agrega el carï¿½cter
 										input[len + 1] = '\0'; // Asegura null-termination
 								}
 						}
@@ -273,12 +273,12 @@ int main() {
 				// ===== PANTALLA ESCANEAR QR =====
 				if (app == APP_ESCANEAR && ev.type == ALLEGRO_EVENT_KEY_DOWN) {
 						if (ignorar_proximo_evento) {
-								ignorar_proximo_evento = 0; // Consume el evento de transición
+								ignorar_proximo_evento = 0; // Consume el evento de transiciï¿½n
 						}
 						else if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) { // Gestiona la salida de la pantalla de escaneo
 								app = APP_MENU; // Regresa al estado de menu cuando se presiona Escape
 						}
-						else if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER) { // Abre el diálogo solo cuando presionas ENTER
+						else if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER) { // Abre el diï¿½logo solo cuando presionas ENTER
 								ALLEGRO_FILECHOOSER* imagen = al_create_native_file_dialog(NULL, "Selecciona una imagen de codigo QR", "*.png;*.jpg;*.bmp", ALLEGRO_FILECHOOSER_FILE_MUST_EXIST);
 								if (imagen) {
 										if (al_show_native_file_dialog(pantalla, imagen)) {
