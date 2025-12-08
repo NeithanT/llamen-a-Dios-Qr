@@ -1,192 +1,104 @@
+;----------Instituto Tecnológico de Costa Rica--------------
+;----------Campus Tecnológico Central Cartago---------------
+;---------Escuela de Ingeniería en Computación--------------
+;-------Curso IC-3101 Arquitectura de Computadoras----------
+;--------------------Proyecto #02---------------------------
+;---------Neithan Vargas Vargas, carne: 2025149384----------
+;---------Fabricio Hernandez, carne: 2025106763-------------
+;---2025/12/08 , II Periodo, Profesor: MS.c Esteban Arias---
+
+; =============================================================================
+; writeBmp.asm - BMP File Header Module
+; =============================================================================
+; This module handles writing the BMP file header and info header
+; =============================================================================
+
 %include "io.mac"
 
-.DATA
-    File            db "test.bmp", 0
-    File_descriptor dd 0
-    cool            db "Compiles", 0
+section .data
+    ; QR Parameters
+    QUIET_ZONE      equ 4               ; 4 modules quiet zone
+    IMG_SIZE        equ 33              ; (25 + 8) * 1 = 33 pixels
     
+    ; BMP row must be multiple of 4 bytes
+    ; 33 * 3 = 99 bytes per row (99 mod 4 = 3, need 1 padding byte)
+    ROW_SIZE        equ 100             ; 99 + 1 padding
+    PIXEL_DATA_SIZE equ 3300            ; 100 * 33
 
-; Header 	14 bytes 	Windows Structure: BITMAPFILEHEADER
-; 0x00 	Signature 	2 bytes 	'BM'
+    ; BMP File Header (14 bytes)
     Signature       db "BM"
-; 0x02 	FileSize 	4 bytes 	File size in bytes
-    FileSize        dd 1954
-; 0x06 	Reserved 	4 bytes 	unused (=0)
+    FileSize        dd 3354             ; 54 + 3300
     Reserved        dd 0
-; 0x0a 	DataOffset 	4 bytes 	File offset to Raster Data
     DataOffset      dd 54
 
-
-; InfoHeader 	40 bytes 	Windows Structure: BITMAPINFOHEADER
-; 0x0e 	Size 	4 bytes 	Size of InfoHeader =40
-    Size            dd 40
-; 0x12 	Width 	4 bytes 	Bitmap Width
-    Width           dd 25
-; 0x16 	Height 	4 bytes 	Bitmap Height
-    Height          dd 25
-; 0x1a 	Planes 	2 bytes 	Number of Planes (=1)
+    ; BMP Info Header (40 bytes)  
+    InfoSize        dd 40
+    Width           dd 33
+    Height          dd 33
     Planes          dw 1
-; 0x1c 	BitCount 	2 bytes 	Bits per Pixel
     BitCount        dw 24
-; 1 = monochrome palette. NumColors = 1  
-; 4 = 4bit palletized. NumColors = 16  
-; 8 = 8bit palletized. NumColors = 256 
-; 16 = 16bit RGB. NumColors = 65536 (?) 
-; 24 = 24bit RGB. NumColors = 16M
-; 0x1e 	Compression 	4 bytes 	Type of Compression
     Compression     dd 0
-; 0 = BI_RGB   no compression  
-; 1 = BI_RLE8 8bit RLE encoding  
-; 2 = BI_RLE4 4bit RLE encoding
-; 0x22 	ImageSize 	4 bytes 	(compressed) Size of Image 
-    ImageSize       dd 1900
-; It is valid to set this = 0 if Compression = 0
-; 0x26 	XpixelsPerM 	4 bytes 	horizontal resolution: Pixels/meter
-    XpixelsPerM     dd 0
-; 0x2a 	YpixelsPerM 	4 bytes 	vertical resolution: Pixels/meter
-    YpixelsPerM     dd 0
-; 0x2e 	ColorsUsed 	4 bytes 	Number of actually used colors
+    ImageSize       dd 3300
+    XpixelsPerM     dd 2835
+    YpixelsPerM     dd 2835
     ColorsUsed      dd 0
-; 0x32 	ColorsImportant 	4 bytes 	Number of important colors
     ColorsImportant dd 0
-; 0 = all
-; 0x36 	ColorTable 	4 * NumColors bytes 	present only if Info.BitsPerPixel <= 8
-; colors should be ordered by importance
 
-    White           db 0xFF
+section .text
+
+; =============================================================================
+; write_bmp_headers
+; Input: EBX = file descriptor
+; =============================================================================
+global write_bmp_headers
+write_bmp_headers:
+    pusha
     
-.UDATA
+    mov EAX, 4                                                                  ; sys_write
+    mov ECX, Signature                                                          ; ECX now points to Signature
+    mov EDX, 14                                                                 ; 14 bytes to write
+    int 0x80                                                                    ; write file header
+    
+    mov EAX, 4                                                                  ; sys_write
+    mov ECX, InfoSize                                                           ; ECX now points to InfoSize
+    mov EDX, 40                                                                 ; 40 bytes to write
+    int 0x80                                                                    ; write info header
+    
+    popa
+    ret
 
-    buffer  resb 1900 ; 76 * 25 ; 76 bytes per row, 25 rows
-    bufTwo  resb 1875
+; =============================================================================
+; open_bmp_file
+; Input: ESI = pointer to filename string
+; Output: EAX = file descriptor
+; =============================================================================
+global open_bmp_file
+open_bmp_file:
+    push EBX
+    push ECX
+    push EDX
+    
+    mov EBX, ESI                                                                ; EBX now points to filename
+    mov ECX, 65                                                                 ; O_CREAT | O_WRONLY
+    mov EDX, 0x1A4                                                              ; permissions 0644
+    mov EAX, 5                                                                  ; sys_open
+    int 0x80                                                                    ; open file
+    
+    pop EDX
+    pop ECX
+    pop EBX
+    ret
 
-.CODE
-
-
-.STARTUP
-
-open_file:
-
-    mov EAX, 5
-    mov EBX, File
-    mov ECX, 65  ; O_WRONLY | O_CREAT
-    mov EDX, 0x1A4  ; file permissions (0644)
-    int 0x80
-
-    mov [File_descriptor], EAX
-
-
-create_header:
-
-    ; Write BITMAPFILEHEADER (14 bytes)
-    mov EAX, 4 ; write mode
-    mov EBX, [File_descriptor]
-    mov ECX, Signature
-    mov EDX, 2
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, FileSize
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, Reserved
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, DataOffset
-    mov EDX, 4
-    int 0x80
-
-    ; Write BITMAPINFOHEADER (40 bytes)
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, Size
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, Width
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, Height
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, Planes
-    mov EDX, 2
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, BitCount
-    mov EDX, 2
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, Compression
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, ImageSize
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, XpixelsPerM
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, YpixelsPerM
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, ColorsUsed
-    mov EDX, 4
-    int 0x80
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, ColorsImportant
-    mov EDX, 4
-    int 0x80
-
-write_pixels:
-
-    mov ESI, 1900
-
-write_loop:
-
-    mov EAX, 4
-    mov EBX, [File_descriptor]
-    mov ECX, White
-    mov EDX, 1
-    int 0x80
-
-    dec ESI
-    cmp ESI, 0
-    jge write_loop
-
-done:
-
-
-    .EXIT
+; =============================================================================
+; close_bmp_file
+; Input: EBX = file descriptor
+; =============================================================================
+global close_bmp_file
+close_bmp_file:
+    push EAX
+    
+    mov EAX, 6                                                                  ; sys_close
+    int 0x80                                                                    ; close file
+    
+    pop EAX
+    ret
