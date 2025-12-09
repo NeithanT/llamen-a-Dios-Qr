@@ -197,7 +197,8 @@ draw_finder_pattern:
     pop ESI                                                                      ; restore ESI
     
     mov EAX, ESI                                                                 ; EAX is now ESI
-    add EAX, 6                                                                   ; add 6 to EAXDX                                                                 ; EBX is now EDX
+    add EAX, 6                                                                   ; add 6 to EAX
+    mov EBX, EDX                                                                 ; EBX is now EDX
     add EBX, 1                                                                   ; add 1 to EBX
     cmp EAX, QR_SIZE                                                             ; compare EAX with 25
     jge .fp_row2_start                                                           ; if greater or equal, jump to .fp_row2_start

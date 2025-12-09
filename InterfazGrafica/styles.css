@@ -1,0 +1,41 @@
+.menu-background {
+    background-image: url("file:///home/nei/Desktop/Arqui/arqui-proy2-qr-equipo_exploding_mites/InterfazGrafica/Imagenes/menu.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+.title-label {
+    font-size: 48px;
+    font-weight: bold;
+    color: #FFEFDC;
+}
+
+.subtitle-label {
+    font-size: 18px;
+    color: #F5F5F5;
+}
+
+.instructions-label {
+    color: #E1E1E1;
+}
+
+.gen-title-label {
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFEFDC;
+}
+
+.gen-instructions-label {
+    color: #E1E1E1;
+}
+
+.scan-title-label {
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFEFDC;
+}
+
+.scan-instructions-label {
+    color: #E1E1E1;
+}
