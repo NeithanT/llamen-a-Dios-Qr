@@ -99,6 +99,7 @@ generate_qr_asm:
     mov dword [input_len], DEFAULT_LEN
 
 .start_encoding:
+
     PutStr msg_encoding
     
     mov ESI, [input_ptr]                                                        ; ESI now points to input data
