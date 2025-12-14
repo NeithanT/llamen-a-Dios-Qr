@@ -1,4 +1,4 @@
-# This is a project 
+# QR GENERATOR
 
 It generates and reads basic qr's using nasm in 32 bits and a GUI with GTK
 
@@ -30,14 +30,14 @@ remember, is linux only
 ## The program
 
 The Menu
-[menu]
+![alt text][menu]
 
 Generating QR's
-[generate]
+![alt text][generate]
 
 Scanning QR's
-[scan]
+![alt text][scan]
 
-[menu]: https://github.com/NeithanT/llamen-a-Dios-Qr/menu.png
-[generate]: https://github.com/NeithanT/llamen-a-Dios-Qr/generate.png
-[scan]: https://github.com/NeithanT/llamen-a-Dios-Qr/scan.png
+[menu]: https://github.com/NeithanT/llamen-a-Dios-Qr/blob/main/menu.png "Logo Title Text 2"
+[generate]: https://github.com/NeithanT/llamen-a-Dios-Qr/blob/main/generate.png "Logo Title Text 2"
+[scan]: https://github.com/NeithanT/llamen-a-Dios-Qr/blob/main/scan.png "Logo Title Text 2"
