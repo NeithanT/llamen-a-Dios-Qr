@@ -13,29 +13,29 @@
 
 .subtitle-label {
     font-size: 18px;
-    color: #F5F5F5;
+    color: #FFEFDC;
 }
 
 .instructions-label {
-    color: #E1E1E1;
+    color: #FFEFDC;
 }
 
 .gen-title-label {
     font-size: 36px;
     font-weight: bold;
-    color: #FFEFDC;
+    color: #837b72;
 }
 
 .gen-instructions-label {
-    color: #E1E1E1;
+    color: #a39a9a;
 }
 
 .scan-title-label {
     font-size: 36px;
     font-weight: bold;
-    color: #FFEFDC;
+    color: #837b72;
 }
 
 .scan-instructions-label {
-    color: #E1E1E1;
+    color: #a39a9a;
 }
